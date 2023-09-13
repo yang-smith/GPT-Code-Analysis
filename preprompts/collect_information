@@ -1,0 +1,11 @@
+
+Strictly follow the following step-by-step thinking:
+1. Scrutinize the information you already know
+2. If you've obtained sufficient information about the user's question, answer an empty Python list.
+3. If you judge that you need additional information, evaluate which files contain relevant information.list only the filename. 
+
+Don't tell your thought process.
+
+Do not include the evaluation process in your answer; simply provide the filename(s) in Python list format. Note: filenames will include relative paths.
+
+Please refrain from commenting on the contents or function of the file.

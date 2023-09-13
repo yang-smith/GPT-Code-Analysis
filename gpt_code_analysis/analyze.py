@@ -99,19 +99,24 @@ def analyze(ai, dbs, input_path):
         if user_question.lower() == 'c':
             break
         messages: List[Message] = [ai.fsystem(system_message)]
-        user_input = dbs.preprompts["clarify"] + "My question is: " + user_question 
-        messages = ai.next(messages, user_input, step_name="user_question")
-        dbs.logs["user_question"] = AI.serialize_messages(messages)
+        user_input = dbs.preprompts["clarify_question"] + "#### My question is: " + user_question 
+        messages = ai.next(messages, user_input, step_name="clarify_question")
+        # dbs.logs["clarify_question"] = AI.serialize_messages(messages)
+        clarify_question = get_user_question()
+        if clarify_question.lower() == 'c':
+            break
+        messages = ai.next(messages, clarify_question, step_name="clarify")
         while True:
+            messages = ai.next(messages, dbs.preprompts["collect_information"], step_name="collect_information")
             # 从AI回应中提取需要的文件列表
             file_paths = extract_needed_files_from_ai_response(messages)
             if not file_paths:
                 break
             # 获取文件内容
             file_content = fetch_file_contents(input_path, file_paths)
-            further_question = file_content  + dbs.preprompts["clarify"]
-            messages = ai.next(messages, further_question, step_name="test")
-            dbs.logs["extern"] = AI.serialize_messages(messages)
+            messages = ai.next(messages, file_content, step_name="file_content")
+            break
+            # dbs.logs["extern"] = AI.serialize_messages(messages)
         to_files(messages[-1].content.strip(), dbs.workspace)
         
         # for path in file_paths:
